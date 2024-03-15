@@ -1,4 +1,4 @@
-module "create_secret_runner"{
+module "simple_runner"{
     source = "Senora-dev/self-service-runner/aws"
     version = "~>1.0.0"
     action_identifier = "simpleActionIdentifier"
