@@ -2,8 +2,9 @@ version: 0.2
 
 env:
   secrets-manager:
-    PORT_CLIENT_SECRET: arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:port_client_secret-...
-    PORT_CLIENT_ID: arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:port_client_id-...
+    # You can set the next values hardcoded or to use the agent outputs like here: https://github.com/Senora-dev/self-service-backend
+    PORT_CLIENT_SECRET: 'PUT_SECRET_ARN_HERE'
+    PORT_CLIENT_ID: 'PUT_SECRET_ARN_HERE'
     
 phases:
   install:
