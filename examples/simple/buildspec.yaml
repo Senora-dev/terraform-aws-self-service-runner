@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    PORT_CLIENT_SECRET: 'PUT_HERE_SECRET_ARN'
+    PORT_CLIENT_ID: 'PUT_HERE_SECRET_ARN'
+    
+phases:
+  install:
+    commands:
+      - sudo yum -y install jq
+  
+  pre_build:
+    commands:
+      - >-
+        ACCESS_TOKEN=$(curl --location --request POST 'https://api.getport.io/v1/auth/access_token' --header 'Content-Type: application/json' --data-raw '{"clientId": "'"$PORT_CLIENT_ID"'","clientSecret": "'"$PORT_CLIENT_SECRET"'"}' | jq '.accessToken' | sed 's/"//g')
+
+      - cd $CODEBUILD_SRC_DIR_runs_bucket
+      - RUN_ID=$(cat payload.json| jq -r '.context.runId')
+      - echo $RUN_ID
+      
+  build:
+    commands:
+       - echo "Your self-service operation is running here."
+       
+  post_build:
+    commands:
+       - echo "Updating status in Port:"
+       - >- 
+        curl -X PATCH https://api.getport.io/v1/actions/runs/$RUN_ID -H 'Content-Type: application/json' -H 'Accept: application/json' -H "Authorization: Bearer $ACCESS_TOKEN"  -d '{"status": "SUCCESS", "message": {"run_status": "Run completed successfully!"}}'
